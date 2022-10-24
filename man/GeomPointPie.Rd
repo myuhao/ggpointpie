@@ -10,7 +10,11 @@ An object of class \code{GeomPointPie} (inherits from \code{GeomPolygon}, \code{
 \usage{
 GeomPointPie
 }
+\arguments{
+\item{...}{skip for now}
+}
 \description{
-I think the r1  and r0 are in their own system?
+ggplot always map size to 1-6. Use scale_size_contineuous to deal with it.
+In the future, maybe get our own scale...
 }
 \keyword{datasets}

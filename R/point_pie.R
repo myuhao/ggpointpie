@@ -1,9 +1,9 @@
 #' Draw pie chart at any x,y coordinates.
 #'
 #' This geom is based on `ggplot2::GeomPolygon`. We used polygon geom to create pie
-#' chart than can be mapped to arbitary x and y coordinates
+#' chart than can be mapped to arbitrary x and y coordinates
 #'
-#' @section Aesthetics:
+#' Aesthetics:
 #' geom_point_pie understand the following aesthetics (required aesthetics are in
 #' bold):
 #'
@@ -15,11 +15,10 @@
 #' - size
 #' - linetype (will change everything rn)
 #' - alpha
-#'
-#' @inheritParams ggplot2::geom_polygon
-#'
 #' @param r0 The radius (0-1) of the inner circle, in case a dounut plot is needed.
+#'
 #' @importFrom ggplot2 layer
+#'
 #' @export
 geom_point_pie <- function(
     mapping = NULL, data = NULL, stat = "identity",
@@ -35,14 +34,17 @@ geom_point_pie <- function(
 
 
 #' I think the r1  and r0 are in their own system?
-#' @importFrom ggplot2 ggproto aes GeomPolygon
-#' @importFrom scales alpha
-#' @importFrom grid viewport
-#' @import dplyr
 #'
 #' ggplot always map size to 1-6. Use scale_size_contineuous to deal with it.
 #' In the future, maybe get our own scale...
-GeomPointPie = ggplot2::ggproto(
+#'
+#' @importFrom ggplot2 ggproto aes GeomPolygon .pt .stroke
+#' @importFrom scales alpha
+#' @importFrom grid viewport pointsGrob
+#' @import dplyr
+#'
+#' @param ... skip for now
+GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,
   required_aes = c("x", "y", "group"),
   default_aes = aes(
@@ -95,29 +97,6 @@ GeomPointPie = ggplot2::ggproto(
 )
 
 
-
-
-geom_my_point = function(mapping = NULL, data = NULL, stat = "identity",
-                         position = "identity", na.rm = FALSE, show.legend = NA,
-                         inherit.aes = TRUE, ...) {
-  layer(
-    geom = GeomMyPoint, mapping = mapping,  data = data, stat = stat,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, ...)
-  )
-}
-
-GeomMyPoint = ggproto(
-  "GeomMyPoint", GeomPoint,
-  draw_panel = function(data, panel_params, coord) {
-    coords <- coord$transform(data, panel_params)
-    print(coords)
-    GeomPoint$draw_panel(data, panel_params, coord)
-  }
-)
-
-
-
 #' Grob to handle a single pie chart.
 #'
 #' @description
@@ -132,6 +111,8 @@ GeomMyPoint = ggproto(
 #' and x/y coords.
 #'
 #' @importFrom grid gpar polygonGrob
+#'
+#' @param ... skip for now
 pieGrob = function(
     x = 0.5, y = 0.5,
     r0 = 0.1, r1 = 0.3,
@@ -141,18 +122,7 @@ pieGrob = function(
     default.units = 'npc',
     gp = gpar(), vp = NULL
   ) {
-  #' Mabe ne make a new grob that draw a pir chart?
-  #' We to be able to specifig:
-  #'   1. location (x, y)
-  #'   2. size (r0, r1)
-  #'   3. propotion (theta0, theta1)
-  #'   4. use gp to deal with fill, color, stroke, etcs
-  #'
 
-
-    #' Combined many vectors of inputs into a single one here
-  #' This might be slow, consider maybe just do an entire circle
-  #' and calculate the cut points?
   coords = lapply(seq_len(length(x)), function(i) {
     .calc_pie(x[i], y[i], r0[i], r1[i], theta0[i], theta1[i], n)
   })

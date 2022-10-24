@@ -18,6 +18,9 @@ pieGrob(
   vp = NULL
 )
 }
+\arguments{
+\item{...}{skip for now}
+}
 \description{
 Based on grid::polygonGrob.
 Sample points along the arc to create a pseudo-circle.
