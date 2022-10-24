@@ -51,11 +51,39 @@ test_that("Basic geom_pie_point", {
   dat2 %>%
     mutate(x = as.character(x), size = normalize_size(y)) %>%
     ggplot(aes(x = x, y = y)) +
-    geom_point_pie(aes(fill = grp, size = size)) +
+    geom_point_pie(aes(fill = grp, size = size, linetype = y == 2)) +
     scale_fill_viridis_d() +
     scale_x_discrete(expand = expansion(add = 1)) +
     scale_y_continuous(expand = expansion(add = 1)) +
     scale_size_continuous(range = c(0.05, 0.10)) +
+    facet_wrap(
+      vars(x),
+      scales = "free"
+    ) +
+    guides(
+      linetype = guide_legend(
+        override.aes = list(fill = NA)
+      ),
+      size = guide_legend(
+        override.aes = list(fill = NA)
+      )
+    )
+
+  tibble::tibble(
+    x = letters[1:5],
+    y = letters[1:5]
+  ) %>%
+    mutate(
+      data = map(x, ~select(dat, -c("x", "y")))
+    ) %>%
+    tidyr::unnest(data) %>%
+    mutate(x = as.character(x), size = y) %>%
+    ggplot(aes(x = x, y = y)) +
+    geom_point_pie(aes(fill = grp, size = size, linetype = y == "a")) +
+    # scale_fill_viridis_d() +
+    # scale_x_discrete(expand = expansion(add = 1)) +
+    # scale_y_continuous(expand = expansion(add = 1)) +
+    # scale_size_continuous(range = c(0.05, 0.10)) +
     facet_wrap(
       vars(x),
       scales = "free"

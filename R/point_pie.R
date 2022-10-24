@@ -44,6 +44,8 @@ geom_point_pie <- function(
 #' @import dplyr
 #'
 #' @param ... skip for now
+#'
+#' @export
 GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,
   required_aes = c("x", "y", "group"),
@@ -53,17 +55,29 @@ GeomPointPie = ggproto(
   ),
 
   draw_key = function(data, params, size) {
+    # pieGrob(
+    #   0.5, 0.5,
+    #   0, size / 50 %||% 0.3,
+    #   0, 1.5 * pi,
+    #   gp = gpar(
+    #     col = alpha(data$colour %||%"black", data$alpha),
+    #     fill = alpha(data$fill %||% "white", data$alpha),
+    #     lty = data$linetype %||% 1
+    #     ),
+    #   vp = viewport(clip = "on")
+    #   )
     pointsGrob(
       0.5, 0.5,
       pch = 21,
       gp = gpar(
-        col = alpha(data$colour %||%"black", data$alpha),
+        col = alpha(data$colour %||% "black", data$alpha),
         fill = alpha(data$fill %||% "white", data$alpha),
         fontsize = (data$size * 25 %||% 1.5) * .pt + (data$stroke %||% 0.5) * .stroke/2,
-        lwd = (data$stroke %||% 0.5) * .stroke/2
-        ),
+        lwd = (data$stroke %||% 0.5) * .stroke/2,
+        lty = data$linetype %||% 1
+      ),
       vp = viewport(clip = "on")
-      )
+    )
   },
 
   draw_panel = function(data, panel_params, coord) {
