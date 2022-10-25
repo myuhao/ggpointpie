@@ -80,7 +80,7 @@ bold):
 \item \strong{x}
 \item \strong{y}
 \item \strong{group}
-\item color
+\item color: line color
 \item fill
 \item r1: the size of the pie chart.
 \item linetype

@@ -68,6 +68,9 @@ geom_point_pie <- function(
 #'
 #' @param ... skip for now
 #'
+#' todo: think about edge case where there is only 1 observation
+#' todo: deal with empty factor levels, what do we return?
+#'
 #' @export
 GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,

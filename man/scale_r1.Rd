@@ -2,11 +2,79 @@
 % Please edit documentation in R/scale-r1.R
 \name{scale_r1}
 \alias{scale_r1}
+\alias{scale_r1_continuous}
 \title{The scales to map the point pie radius.}
 \usage{
-scale_r1(..., range = c(0.1, 0.4))
+scale_r1_continuous(
+  name = waiver(),
+  breaks = waiver(),
+  labels = waiver(),
+  limits = NULL,
+  range = c(0.1, 0.4),
+  trans = "identity",
+  guide = "legend"
+)
+}
+\arguments{
+\item{name}{The name of the scale. Used as the axis or legend title. If
+\code{waiver()}, the default, the name of the scale is taken from the first
+mapping used for that aesthetic. If \code{NULL}, the legend title will be
+omitted.}
+
+\item{breaks}{One of:
+\itemize{
+\item \code{NULL} for no breaks
+\item \code{waiver()} for the default breaks computed by the
+\link[scales:trans_new]{transformation object}
+\item A numeric vector of positions
+\item A function that takes the limits as input and returns breaks
+as output (e.g., a function returned by \code{\link[scales:breaks_extended]{scales::extended_breaks()}}).
+Also accepts rlang \link[rlang:as_function]{lambda} function notation.
+}}
+
+\item{labels}{One of:
+\itemize{
+\item \code{NULL} for no labels
+\item \code{waiver()} for the default labels computed by the
+transformation object
+\item A character vector giving labels (must be same length as \code{breaks})
+\item A function that takes the breaks as input and returns labels
+as output. Also accepts rlang \link[rlang:as_function]{lambda} function
+notation.
+}}
+
+\item{limits}{One of:
+\itemize{
+\item \code{NULL} to use the default scale range
+\item A numeric vector of length two providing limits of the scale.
+Use \code{NA} to refer to the existing minimum or maximum
+\item A function that accepts the existing (automatic) limits and returns
+new limits. Also accepts rlang \link[rlang:as_function]{lambda} function
+notation.
+Note that setting limits on positional scales will \strong{remove} data outside of the limits.
+If the purpose is to zoom, use the limit argument in the coordinate system
+(see \code{\link[ggplot2:coord_cartesian]{coord_cartesian()}}).
+}}
+
+\item{trans}{For continuous scales, the name of a transformation object
+or the object itself. Built-in transformations include "asn", "atanh",
+"boxcox", "date", "exp", "hms", "identity", "log", "log10", "log1p", "log2",
+"logit", "modulus", "probability", "probit", "pseudo_log", "reciprocal",
+"reverse", "sqrt" and "time".
+
+A transformation object bundles together a transform, its inverse,
+and methods for generating breaks and labels. Transformation objects
+are defined in the scales package, and are called \verb{<name>_trans} (e.g.,
+\code{\link[scales:boxcox_trans]{scales::boxcox_trans()}}). You can create your own
+transformation with \code{\link[scales:trans_new]{scales::trans_new()}}.}
+
+\item{guide}{A function used to create a guide or its name. See
+\code{\link[ggplot2:guides]{guides()}} for more information.}
 }
 \description{
 These scales are used for the \code{r1} aes in \link{geom_point_pie} layer as default.
 We currently do not support any discrete scale.
+}
+\seealso{
+\code{\link[ggplot2:scale_size]{ggplot2::scale_size_continuous()}}
 }

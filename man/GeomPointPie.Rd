@@ -11,7 +11,10 @@ An object of class \code{GeomPointPie} (inherits from \code{GeomPolygon}, \code{
 GeomPointPie
 }
 \arguments{
-\item{...}{skip for now}
+\item{...}{skip for now
+
+todo: think about edge case where there is only 1 observation
+todo: deal with empty factor levels, what do we return?}
 }
 \description{
 ggproto class that descripe combination of pie chart and point.
