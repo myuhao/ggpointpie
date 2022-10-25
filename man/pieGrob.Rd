@@ -2,33 +2,52 @@
 % Please edit documentation in R/point_pie.R
 \name{pieGrob}
 \alias{pieGrob}
-\title{Grob to handle a single pie chart.}
+\title{Grob for a pie chart.}
 \usage{
 pieGrob(
   x = 0.5,
   y = 0.5,
-  r0 = 0.1,
+  r0 = 0,
   r1 = 0.3,
   theta0 = 0,
   theta1 = pi/2,
   n = 360,
-  name = NULL,
-  default.units = "npc",
+  position_unit = "npc",
+  size_unit = "snpc",
   gp = gpar(),
-  vp = NULL
+  vp = NULL,
+  ...
 )
 }
 \arguments{
-\item{...}{skip for now}
+\item{x, y}{The x and y coordinates for this grob, in \code{position_unit}.}
+
+\item{r0, r1}{The inner and outer arc radius, in \code{size_unit}.}
+
+\item{n}{The number of points to sample.}
+
+\item{position_unit}{The grid unit to use for where to put the grob.}
+
+\item{size_unit}{The grid unit to use for the size of the grob.}
+
+\item{gp, vp, ...}{Parameters for \code{\link[grid:grid.polygon]{grid::polygonGrob()}}.}
+
+\item{thrta0, theta1}{The start and end angle of the piece of pie, in radius.}
+}
+\value{
+A \code{\link[grid:grid.polygon]{grid::polygonGrob()}} object that represents a piece of the pie chart.
 }
 \description{
-Based on grid::polygonGrob.
+Use to create grob that is a piece of the pie chart, with parameters...
+Build on top of the \code{\link[grid:grid.polygon]{grid::polygonGrob()}}.
 Sample points along the arc to create a pseudo-circle.
-thetas are assumed to be in radius, not degree/
+Maintain aspect ratio.
 }
 \details{
-Assume x/y coordinate and radius are in the same coordinate system.
-In other words, I simplyly added those two values.
-When building geom, maybe need to looking into how to deal with the size
-and x/y coords.
+So \code{\link[gridExtra:ngonGrob]{gridExtra::ngonGrob()}} is able to maintain aspect ratio even using
+the \code{\link[grid:grid.polygon]{grid::polygonGrob()}} under its hood. Inspired by the gridExtra approach, we
+use separately specify the \strong{position} (npc-based) and \strong{size} (snpc-base)
+parameters. In the end, the grob will be located at the desired location
+with its radius proportional to the smaller of the width and height
+of the current viewport. Everything is normalized so \link{0-1} can be used.
 }

@@ -1,154 +1,175 @@
-# test_that(
-#   "Test GeomPointPie Object",
-#   code = {
-#     iris %>%
-#       ggplot(aes(x = Sepal.Length, y = Sepal.Width)) +
-#       geom_point_pie(aes(color = Species))
-#   }
-# )
-#
-#
-#
-# test_that("Test pieGrob", {
-#   out = pieGrob(
-#     x = c(0.5, 0.5),
-#     y = c(0.5, 0.5),
-#     r0 = c(0, 0),
-#     r1 = c(0.3, 0.3),
-#     theta0 = c(0, pi),
-#     theta1 = c(pi,2 * pi),
-#     gp = gpar(fill = c("red", "blue"))
-#   )
-#   grid.draw(out)
-# }
-# )
-#
-# test_that("Basic geom_pie_point", {
-#   dat = tibble::tibble(
-#     x = rep(1, 5),
-#     y = rep(1, 5)
-#   ) %>%
-#     dplyr::mutate(
-#       r_idx = dplyr::row_number(),
-#       grp = sample(1:10, 5),
-#       grp = map2(grp, r_idx, ~rep(letters[.y], times = .x))
-#     ) %>%
-#     tidyr::unnest(grp)
-#   dat %>%
-#     ggplot(aes(x = x, y = y)) +
-#     geom_point_pie(aes(group = grp, fill = grp))
-#
-#
-#   dat2 = tibble::tibble(
-#     x = 1:5,
-#     y = 1:5
-#   ) %>%
-#     mutate(
-#       data = map(x, ~select(dat, -c("x", "y")))
-#     ) %>%
-#     tidyr::unnest(data)
-#
-#   dat2 %>%
-#     mutate(x = as.character(x), size = normalize_size(y)) %>%
-#     ggplot(aes(x = x, y = y)) +
-#     geom_point_pie(aes(fill = grp, size = size, linetype = y == 2)) +
-#     scale_fill_viridis_d() +
-#     scale_x_discrete(expand = expansion(add = 1)) +
-#     scale_y_continuous(expand = expansion(add = 1)) +
-#     scale_size_continuous(range = c(0.05, 0.30)) +
-#     facet_wrap(
-#       vars(x),
-#       scales = "free"
-#     ) +
-#     guides(
-#       linetype = guide_legend(
-#         override.aes = list(fill = NA)
-#       ),
-#       size = guide_legend(
-#         override.aes = list(fill = NA)
-#       )
-#     )
-#
-#   dat2 %>%
-#     mutate(x = as.character(x), size = normalize_size(y)) %>%
-#     ggplot(aes(x = x, y = y)) +
-#     geom_point(size = 20)  +
-#     facet_wrap(
-#       vars(x),
-#       scales = "free"
-#     ) +
-#     scale_y_discrete(limits = c(4, 6))
-#
-#   tibble::tibble(
-#     x = letters[1:5],
-#     y = letters[1:5]
-#   ) %>%
-#     mutate(
-#       data = map(x, ~select(dat, -c("x", "y")))
-#     ) %>%
-#     tidyr::unnest(data) %>%
-#     mutate(x = as.character(x)) %>%
-#     ggplot(aes(x = x, y = y)) +
-#     geom_point_pie(aes(fill = grp, linetype = y == "a")) +
-#     # scale_fill_viridis_d() +
-#     # scale_x_discrete(expand = expansion(add = 1)) +
-#     # scale_y_continuous(expand = expansion(add = 1)) +
-#     # scale_size_continuous(range = c(0.05, 0.10)) +
-#     facet_wrap(
-#       vars(x),
-#       scales = "free"
-#     ) +
-#     guides(
-#       linetype = guide_legend(
-#         override.aes = list(fill = NA)
-#       ),
-#       size = guide_legend(
-#         override.aes = list(fill = NA)
-#       )
-#     )
-# })
 
+make_ggplot2_test_data = function(n_points = 5) {
+  dat = tibble::tibble(
+    x = rep(1, 5),
+    y = rep(1, 5)
+  ) %>%
+    dplyr::mutate(
+      r_idx = dplyr::row_number(),
+      grp = c(9, 2, 10, 1, 7),
+      grp = map2(grp, r_idx, ~rep(letters[.y], times = .x))
+    ) %>%
+    tidyr::unnest(grp)
 
-test_that("Check circlGrob and pieGrob look the same", {
-  xs = c(0.3, 0.7)
-  ys = c(0.3, 0.7)
-  rs = c(0.1, 0.3)
+  tibble::tibble(
+    r = 1:n_points / (2 * n_points),
+    x_c = 1:n_points,
+    y_c = 1:n_points,
+    x_d = LETTERS[x_c],
+    y_d = LETTERS[y_c]
+  ) %>%
+    mutate(
+      data = map(x_c, ~select(dat, -c("x", "y")))
+    ) %>%
+    tidyr::unnest(data)
+}
 
-  vdiffr::expect_doppelganger("pointGrob", grid.draw(circleGrob(xs, ys, rs)))
-
-  vdiffr::expect_doppelganger("pieGrob", grid.draw(pieGrob(xs, ys, r1 = rs, theta0 = 0, theta1 = 2 * pi)))
+test_that("Test pieGrob with default", {
+  vdiffr::expect_doppelganger(
+    "Draw pieGrob directly as circle",
+    grid.draw(pieGrob())
+  )
 })
 
 
+test_that("Test pieGrob with multiple groups.", {
+  xs = rep(0.5, 5)
+  ys = rep(0.5, 5)
+  amount = c(3, 8, 3, 2, 4)
+  theta1 = cumsum(amount)
+  theta0 = theta1 - amount
+  theta1 = theta1 / sum(amount) * (2 * pi)
+  theta0 = theta0 / sum(amount) * (2 * pi)
+  fills = scales::viridis_pal()(length(xs))
 
-dat = tibble::tibble(
-  x = rep(1, 5),
-  y = rep(1, 5)
-  ) %>%
-  dplyr::mutate(
-    r_idx = dplyr::row_number(),
-    grp = sample(1:10, 5),
-    grp = map2(grp, r_idx, ~rep(letters[.y], times = .x))
-  ) %>%
-  tidyr::unnest(grp)
+  vdiffr::expect_doppelganger(
+    "Check a single pie works with pieGrob",
+    grid.draw(
+      pieGrob(xs, ys, 0, 0.3, theta0, theta1, gp = gpar(fill = fills, lty = 2))
+    )
+  )
+})
 
 
-tibble::tibble(
-  x = letters[1:5],
-  y = letters[1:5],
-  r = 1:5 / 10,
-  # x = 1:5,
-  # y = 1:5
-) %>%
-  mutate(
-    data = map(x, ~select(dat, -c("x", "y")))
+test_that("Test pieGrob() can vectorize parameters", {
+  xs = c(0.3, 0.7)
+  ys = c(0.3, 0.7)
+
+  vdiffr::expect_doppelganger(
+    "One group.",
+    grid.draw(pieGrob(xs, ys, 0, 0.3, 0, 2 * pi, n = 90))
+  )
+
+  coords = tibble::tibble(
+    xs = rep(c(0.2, 0.7), each = 3),
+    ys = rep(c(0.2, 0.7), each = 3),
+    amount = c(3, 8, 3, 2, 4, 5)
   ) %>%
-  tidyr::unnest(data) %>%
-  group_by(across(everything())) %>%
-  summarise(amount = n()) %>%
-  ungroup() %>%
-  ggplot(aes()) +
-  layer(
-    geom = GeomPointPie, stat = StatIdentity, mapping = aes(x = x, y = y, r1 = 0.1), position = PositionIdentity
-  ) +
-  facet_wrap(vars(x), ncol = 1, scales = "free")
+    group_by(xs, ys) %>%
+    mutate(
+      theta1 = cumsum(amount),
+      theta0 = theta1 - amount,
+      theta1 = theta1 / sum(amount) * (2 * pi),
+      theta0 = theta0 / sum(amount) * (2 * pi)
+    )
+
+  vdiffr::expect_doppelganger(
+    "More than one group",
+    grid.draw(pieGrob(coords$xs, coords$ys, 0, 0.3, coords$theta0, coords$theta1))
+  )
+})
+
+
+#' geom testings
+test_that("Test geom in continuous_x|y_scales", {
+
+  plot_single = make_ggplot2_test_data() %>%
+    filter(x_c == 1) %>%
+    ggplot(aes(x = x_c, y = y_c)) +
+    geom_point_pie(aes(group = grp, fill = grp))
+
+  plot_all = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_c, y = y_c)) +
+    geom_point_pie(aes(group = grp, fill = grp))
+
+  plot_facet = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_c, y = y_c)) +
+    geom_point_pie(aes(group = grp, fill = grp)) +
+    facet_wrap(vars(x_d), scales = "free", nrow = 1)
+
+  vdiffr::expect_doppelganger("Continuous Single Pie Geom", plot_single)
+  vdiffr::expect_doppelganger("Continuous Multiple Pie Geom", plot_all)
+  vdiffr::expect_doppelganger("Continuous Facet Pie Geom", plot_facet)
+
+})
+
+test_that("Test geom in discrete_x|y_scales", {
+  plot_single = make_ggplot2_test_data() %>%
+    filter(x_c == 1) %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(aes(group = grp, fill = grp))
+
+  plot_all = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(aes(group = grp, fill = grp))
+
+  plot_facet = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(aes(group = grp, fill = grp)) +
+    facet_wrap(vars(x_d), scales = "free", nrow = 1)
+  vdiffr::expect_doppelganger("Discrete Single Pie Geom", plot_single)
+  vdiffr::expect_doppelganger("Discrete Multiple Pie Geom", plot_all)
+  vdiffr::expect_doppelganger("Discrete Facet Pie Geom", plot_facet)
+})
+
+
+test_that("Test aes mapping", {
+  plot_discrete_aes = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(
+      aes(
+        group = grp,
+        fill = grp,
+        color = letters[x_c],
+        linetype = grp == "a"
+      )
+    ) +
+    facet_wrap(vars(x_d), scales = "free")
+
+  plot_continuous_aes = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(
+      aes(
+        group = grp,
+        fill = r * 10,
+        color = r + 1,
+        r1 = r
+      )
+    ) +
+    facet_wrap(vars(x_d), scales = "free") +
+    scale_color_viridis_c() +
+    scale_fill_viridis_c(option = "E")
+
+  vdiffr::expect_doppelganger("Check discrete variables work", plot_discrete_aes)
+  vdiffr::expect_doppelganger("Check continuous variables work", plot_continuous_aes)
+
+})
+
+
+test_that("Test guides", {
+  plot_guides = make_ggplot2_test_data() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(
+      aes(
+        group = grp,
+        fill = grp,
+        r1 = r,
+        color = letters[x_c],
+        linetype = grp == "a",
+        alpha = grp == "c"
+      )
+    ) +
+    facet_wrap(vars(x_d), scales = "free")
+  vdiffr::expect_doppelganger("Test draw_key works", plot_guides)
+})
+

@@ -3,7 +3,7 @@
 \docType{data}
 \name{GeomPointPie}
 \alias{GeomPointPie}
-\title{I think the r1  and r0 are in their own system?}
+\title{PointPieGeom Proto}
 \format{
 An object of class \code{GeomPointPie} (inherits from \code{GeomPolygon}, \code{Geom}, \code{ggproto}, \code{gg}) of length 5.
 }
@@ -14,6 +14,8 @@ GeomPointPie
 \item{...}{skip for now}
 }
 \description{
+ggproto class that descripe combination of pie chart and point.
+
 ggplot always map size to 1-6. Use scale_size_contineuous to deal with it.
 In the future, maybe get our own scale...
 }
