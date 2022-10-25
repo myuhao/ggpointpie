@@ -21,3 +21,4 @@ A named list of length 2, specifying the x and y coordinates for the arc require
 \description{
 Generate coordinates along an arc.
 }
+\keyword{internal}

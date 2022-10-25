@@ -1,6 +1,9 @@
 #' @title
 #' Draw pie chart at any x,y coordinates.
 #'
+#' @rdname point_pie
+#' @name geom_point_pie
+#'
 #' @description
 #' This geom is inherits from on [ggplot2::GeomPolygon]. W
 #' e used polygon geom to create pie chart than can be mapped to
@@ -36,7 +39,9 @@
 #' )
 #' ggplot(data, aes(x = x, y = y)) +
 #'   geom_point_pie(aes(group = grp, fill = grp))
-#'
+NULL
+
+#' @rdname point_pie
 #' @export
 geom_point_pie <- function(
     mapping = NULL, data = NULL, stat = "identity",
@@ -60,6 +65,8 @@ geom_point_pie <- function(
 #' ggplot always map size to 1-6. Use scale_size_contineuous to deal with it.
 #' In the future, maybe get our own scale...
 #'
+#' @rdname point_pie
+#'
 #' @importFrom ggplot2 ggproto aes GeomPolygon .pt .stroke
 #' @importFrom scales alpha
 #' @importFrom grid viewport pointsGrob
@@ -72,6 +79,7 @@ geom_point_pie <- function(
 #' todo: deal with empty factor levels, what do we return?
 #'
 #' @export
+#'
 GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,
   required_aes = c("x", "y", "group"),
@@ -81,7 +89,6 @@ GeomPointPie = ggproto(
   ),
 
   draw_key = function(data, params, size) {
-
     # For lty:
     if (length(unique(data$linetype)) > 1) {
       return(GeomLine$draw_key(data, params, size))
@@ -102,7 +109,6 @@ GeomPointPie = ggproto(
 
   draw_panel = function(data, panel_params, coord) {
     coords = coord$transform(data, panel_params)
-
     coords = coords %>%
       group_by(across(everything())) %>%
       summarize(
@@ -133,6 +139,34 @@ GeomPointPie = ggproto(
     )
   }
 )
+
+#' @keywords internal
+stat_point_pie = function(
+    mapping = NULL, data = NULL, geom = GeomPointPie,
+    position = 'identity', na.rm = FALSE,
+    show.legend = NA, inherit.aes = TRUE, ...
+  ) {
+  layer(
+    geom = StatPointPie, data = data, mapping = mapping, geom = geom,
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(na.rm = na.rm, ...)
+  )
+}
+
+#' @importFrom ggplot2 StatIdentity
+#'
+#' @keywords internal
+StatPointPie = ggproto(
+  "StatPointPie", StatIdentity,
+
+  compute_layer = function(data, params, layout) {
+
+  },
+  compute_panel = function(data, scales, ...) {
+
+  }
+)
+
 
 
 #' @title
@@ -227,6 +261,8 @@ pieGrob = function(
 #' @param go_cww Should the points be calculate in CounterClockWise order?
 #'
 #' @return A named list of length 2, specifying the x and y coordinates for the arc required.
+#'
+#' @keywords internal
 .calc_arc = function(.x, .y, .r, .theta0, .theta1, n, go_ccw = TRUE) {
   n_out = abs(.theta0 - .theta1) / (2 * pi) * n
   n_out = ceiling(n_out)
@@ -254,7 +290,11 @@ pieGrob = function(
 }
 
 #' Generate the coordinate for a single polygonGrob
+#' In the case where delta theta > 2 * pi,
+#' will not draw the center.
+#' @keywords internal
 .calc_pie = function(.x, .y, .r0, .r1, .theta0, .theta1, n = 360) {
+  is_less_2pi = (.theta1 - .theta0) < (2 * pi)
   if (.r0 > 0) {
     coords = list()
     outer = .calc_arc(.x, .y, .r1, .theta0, .theta1, n)
@@ -265,8 +305,10 @@ pieGrob = function(
 
   } else {
     coords = .calc_arc(.x, .y, .r1, .theta0, .theta1, n)
-    coords$x = c(.x, coords$x)
-    coords$y = c(.y, coords$y)
+    if (is_less_2pi) {
+      coords$x = c(.x, coords$x)
+      coords$y = c(.y, coords$y)
+    }
     return(coords)
   }
 

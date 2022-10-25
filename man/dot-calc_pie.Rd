@@ -2,10 +2,15 @@
 % Please edit documentation in R/point_pie.R
 \name{.calc_pie}
 \alias{.calc_pie}
-\title{Generate the coordinate for a single polygonGrob}
+\title{Generate the coordinate for a single polygonGrob
+In the case where delta theta > 2 * pi,
+will not draw the center.}
 \usage{
 .calc_pie(.x, .y, .r0, .r1, .theta0, .theta1, n = 360)
 }
 \description{
 Generate the coordinate for a single polygonGrob
+In the case where delta theta > 2 * pi,
+will not draw the center.
 }
+\keyword{internal}

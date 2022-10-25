@@ -173,3 +173,60 @@ test_that("Test guides", {
   vdiffr::expect_doppelganger("Test draw_key works", plot_guides)
 })
 
+test_that("Test one category, delta theta = 2 * pi", {
+  one_category = make_ggplot2_test_data() %>%
+    filter(grp == "a") %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(
+      aes(
+        group = grp,
+        fill = grp,
+        r1 = r
+      )
+    ) +
+    facet_wrap(vars(x_d), scales = "free")
+  vdiffr::expect_doppelganger("Test only one category", one_category)
+})
+
+test_that("Test NAs", {
+  one_NA_per_panel = make_ggplot2_test_data() %>%
+    group_by(x_d) %>%
+    mutate(
+      grp = map_at(grp, 1, ~NA_character_),
+      grp = map_chr(grp, ~.x)
+    ) %>%
+    ungroup() %>%
+    ggplot(aes(x = x_d, y = y_d)) +
+    geom_point_pie(
+      aes(
+        group = grp,
+        fill = grp,
+        r1 = r
+      ), na.rm = TRUE
+    ) +
+    facet_wrap(vars(x_d), scales = "free")
+  vdiffr::expect_doppelganger("Remove NAs", one_NA_per_panel)
+})
+
+
+test_that("Deal with missing in discrete scale", {
+  tidyr::expand_grid(
+    x = letters[1:5],
+    y = c("m", "n")
+  ) %>%
+    mutate(
+      x = factor(x),
+      y = factor(y),
+      grp = map(x, ~make_ggplot2_test_data()$grp)
+    ) %>%
+    tidyr::unnest(grp) %>%
+    filter(x != "b" | y != "n") %>%
+    ggplot(aes(x = x, y = y)) +
+    geom_point_pie(aes(group = grp, fill = grp), r1 = 0.2) +
+    facet_grid(
+      rows = vars(y),
+      cols = vars(x),
+      scales = "free",
+      drop = FALSE
+    )
+})

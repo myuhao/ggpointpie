@@ -12,7 +12,7 @@
 #' @importFrom ggplot2 waiver
 NULL
 
-
+#' @keywords internal
 scale_r1 = function(
     name = waiver(), breaks = waiver(), labels = waiver(),
     limits = NULL, range = c(0.1, 0.4), trans = "identity",
