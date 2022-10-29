@@ -62,7 +62,7 @@ geom_point_pie <- function(
 #' @description
 #' ggproto class that descripe combination of pie chart and point.
 #'
-#' ggplot always map size to 1-6. Use scale_size_contineuous to deal with it.
+#' ggplot always map size to 1-6. Use scale_size_continuous to deal with it.
 #' In the future, maybe get our own scale...
 #'
 #' @rdname point_pie
@@ -154,6 +154,14 @@ stat_point_pie = function(
 }
 
 #' @importFrom ggplot2 StatIdentity
+#'
+#' @details
+#' Rethink about the design. Use this stat
+#' to transform the "long" format data (one observation per row)
+#' into the proper plot format, i.e, a piece of the pie per row.
+#'
+#' This probably allow user to supply different data input, and they can
+#' just choose different stat when call geom...
 #'
 #' @keywords internal
 StatPointPie = ggproto(

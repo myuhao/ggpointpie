@@ -1,4 +1,5 @@
-
+library(tidyverse)
+library(grid)
 make_ggplot2_test_data = function(n_points = 5) {
   dat = tibble::tibble(
     x = rep(1, 5),
@@ -170,7 +171,7 @@ test_that("Test guides", {
       )
     ) +
     facet_wrap(vars(x_d), scales = "free")
-  vdiffr::expect_doppelganger("Test draw_key works", plot_guides)
+  vdiffr::expect_doppelganger("Test draw_key works", suppressWarnings(plot_guides))
 })
 
 test_that("Test one category, delta theta = 2 * pi", {
