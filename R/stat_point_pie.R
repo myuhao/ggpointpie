@@ -1,6 +1,3 @@
-
-
-
 #' @rdname point_pie
 #' @export
 stat_point_pie = function(
@@ -16,42 +13,21 @@ stat_point_pie = function(
 }
 
 
-#' @title
-#' StatPointPie
-#'
 #' @details
-#' Rethink about the design. Use this stat
-#' to transform the "long" format data (one observation per row)
-#' into the proper plot format, i.e, a piece of the pie per row.
-#'
-#' This probably allow user to supply different data input, and they can
-#' just choose different stat when call geom...
-#'
-#'
-#' Use StatPointPie to turn long format to short format:
-#' group by `fill` + either `group` or `x,y`,
-#' count the number of observations.
-#'
-#'
-#' if `group` is supplied, Stat will recieve each group
+#' The stat to calculate the count of each subgroup to handle the long data
+#' format
 #'
 #' @importFrom ggplot2 Stat
-#' @importFrom dplyr across everything n
+#' @importFrom dplyr across everything n summarize
 #'
-#' @rdname geom_point_pie
+#' @name ggproto-subclass
+#' @rdname ggproto-subclass
 #'
 #' @export
 StatPointPie = ggproto(
   "StatPointPie",
   Stat,
   compute_group = function(self, data, scales) {
-    # Count each unique combination
-    # print(data)
-    # ct = nrow(data)
-    # data = head(data, n = 1L)
-    # data$ct = ct
-    # data
-
     data %>%
       group_by(across(everything())) %>%
       summarize(ct = n(), .groups = "keep") %>%

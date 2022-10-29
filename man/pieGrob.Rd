@@ -2,7 +2,7 @@
 % Please edit documentation in R/pieGrob.R
 \name{pieGrob}
 \alias{pieGrob}
-\title{Grob for a pie chart.}
+\title{Pie chart grob.}
 \usage{
 pieGrob(
   x = 0.5,
@@ -16,7 +16,7 @@ pieGrob(
   size_unit = "snpc",
   gp = gpar(),
   vp = NULL,
-  ...
+  name = NULL
 )
 }
 \arguments{
@@ -24,30 +24,88 @@ pieGrob(
 
 \item{r0, r1}{The inner and outer arc radius, in \code{size_unit}.}
 
+\item{theta0, theta1}{The start and end angle of the piece of pie, in radius.}
+
 \item{n}{The number of points to sample.}
 
 \item{position_unit}{The grid unit to use for where to put the grob.}
 
 \item{size_unit}{The grid unit to use for the size of the grob.}
 
-\item{gp, vp, ...}{Parameters for \code{\link[grid:grid.polygon]{grid::polygonGrob()}}.}
+\item{gp}{An object from \code{\link[grid:gpar]{grid::gpar()}}.}
 
-\item{thrta0, theta1}{The start and end angle of the piece of pie, in radius.}
+\item{vp}{A \code{\link[grid:viewport]{grid::viewport()}} object.}
+
+\item{name}{A character identifier.}
 }
 \value{
 A \code{\link[grid:grid.polygon]{grid::polygonGrob()}} object that represents a piece of the pie chart.
 }
 \description{
-Use to create grob that is a piece of the pie chart, with parameters...
-Build on top of the \code{\link[grid:grid.polygon]{grid::polygonGrob()}}.
-Sample points along the arc to create a pseudo-circle.
+Use to create grob that is a piece of the pie chart that is always a circle.
 Maintain aspect ratio.
 }
 \details{
-So \code{\link[gridExtra:ngonGrob]{gridExtra::ngonGrob()}} is able to maintain aspect ratio even using
-the \code{\link[grid:grid.polygon]{grid::polygonGrob()}} under its hood. Inspired by the gridExtra approach, we
-use separately specify the \strong{position} (npc-based) and \strong{size} (snpc-base)
-parameters. In the end, the grob will be located at the desired location
+A new grob that is piece of a pie chart. It is worth mention that
+\href{https://ggforce.data-imaginist.com/}{ggforce} package implement a
+\href{https://github.com/thomasp85/ggforce/blob/main/R/shape.R#123}{shape grob}.
+However, to my understanding, the aspect ratio of that grob will change,
+resulting a ellipse like pie chart.
+
+\code{\link[gridExtra:ngonGrob]{gridExtra::ngonGrob()}} implements a polygon grob that maintain aspect ratio.
+It uses the \code{\link[grid:grid.polygon]{grid::polygonGrob()}} internally and does some unit conversion.
+Inspired by the gridExtra approach, we separately specify the
+\strong{position} (npc-based) and \strong{size} (snpc-based) parameters.
+In the end, the grob will be located at the desired location
 with its radius proportional to the smaller of the width and height
 of the current viewport. Everything is normalized so \link{0-1} can be used.
+
+If the piece of pie is greater than 2*pi, it will draw a circle instrand.
+}
+\examples{
+# A simple slice of the pie chart that is red.
+pie1 = pieGrob(
+  x = 0.3, y = 0.3,
+  r0 = 0.0, r1 = 0.5,
+  gp = grid::gpar(fill = "red")
+)
+grid::grid.draw(pie1)
+
+# How about a part of a donut?
+donut = pieGrob(
+  x = 0.7, y = 0.7,
+  r0 = 0.1, r1 = 0.2,
+  theta0 = pi / 2, theta1 = 3 * pi / 2,
+  gp = grid::gpar(col = "green", lty =  2)
+)
+grid::grid.newpage()
+grid::grid.draw(donut)
+
+# grob parameters are vectorized
+many_pieces = pieGrob(
+  x = c(0.3, 0.7), y = c(0.3, 0.7),
+  r0 = c(0, 0.1), r1 = c(0.2, 0.4),
+  theta0 = c(1, 2), theta1 = c(2, 3),
+  gp = grid::gpar(
+    fill = c("orange", "blue"),
+    lty = c(2, 3),
+    col = c("grey20", "#FFFFFF")
+  )
+)
+grid::grid.newpage()
+grid::grid.draw(many_pieces)
+
+# If is is a full circle, draw circle...
+big_pie = pieGrob(
+  x = 0.5, y = 0.5,
+  r0 = 0.0, r1 = 0.4,
+  theta0 = 0, theta1 = 2 * pi,
+  gp = grid::gpar(fill = "blue")
+)
+grid::grid.newpage()
+grid::grid.draw(big_pie)
+
+}
+\seealso{
+\code{\link[gridExtra:ngonGrob]{gridExtra::ngonGrob()}}
 }

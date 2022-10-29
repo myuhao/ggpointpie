@@ -1,4 +1,19 @@
 url: ~
 template:
   bootstrap: 5
+reference:
+- title: Geoms
+- contents:
+  - point_pie
 
+- title: Scales
+- contents:
+  - scale_r1
+
+- title: Grob
+- contents:
+  - pieGrob
+
+- title: Internal
+- contents:
+  - ggproto-subclass

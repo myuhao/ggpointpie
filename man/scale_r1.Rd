@@ -2,9 +2,12 @@
 % Please edit documentation in R/scale-r1.R
 \name{scale_r1}
 \alias{scale_r1}
+\alias{scale_r1_discrete}
 \alias{scale_r1_continuous}
 \title{The scales to map the point pie radius.}
 \usage{
+scale_r1_discrete(...)
+
 scale_r1_continuous(
   name = waiver(),
   breaks = waiver(),

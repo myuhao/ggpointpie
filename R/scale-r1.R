@@ -2,9 +2,11 @@
 #' The scales to map the point pie radius.
 #'
 #' @name scale_r1
+#' @rdname scale_r1
 #' @description
 #' These scales are used for the `r1` aes in [geom_point_pie] layer as default.
 #' We currently do not support any discrete scale.
+#'
 #' @inheritParams ggplot2::continuous_scale
 #'
 #' @seealso [ggplot2::scale_size_continuous()]
@@ -31,6 +33,7 @@ scale_r1 = function(
 }
 
 #' Discrete scale doesn't make sense for r1.
+#' @rdname scale_r1
 #' @export
 scale_r1_discrete <- function(...) {
   rlang::abort("Pie point size cannot be used with discrete data at this moment")

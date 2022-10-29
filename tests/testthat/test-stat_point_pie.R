@@ -31,7 +31,7 @@ test_that("Test using amount", {
     group_by(across(everything())) %>%
     summarize(am = n()) %>%
     ggplot(aes(x = x_d, y = y_d)) +
-    geom_point_pie(aes(fill = grp, amount = am), stat = "identity") +
+    geom_point_pie(aes(fill = grp, amount = am)) +
     facet_wrap(vars(x_d), scales = "free", nrow = 1)
 
   vdiffr::expect_doppelganger("Use amouny + stat_identity", plot_1)

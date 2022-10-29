@@ -5,8 +5,7 @@
 #' @name point_pie
 #'
 #' @description
-#' This geom is inherits from on [ggplot2::GeomPolygon]. W
-#' e used polygon geom to create pie chart than can be mapped to
+#' This geom is used to draw any number of pie chart at any
 #' arbitrary x and y coordinates.
 #' A advantage of this geom over other implementation is that is keeps its
 #' aspect ratio so the point is always a perfect circle.
@@ -14,38 +13,38 @@
 #'
 #' @section
 #' Aesthetics:
-#' [geom_point_pie] understand the following aesthetics (required aesthetics are in
-#' bold):
+#' [geom_point_pie()] understand the following aesthetics
+#' (required aesthetics are in bold):
 #'
 #' - **x**
 #' - **y**
-#' - **fill**
-#' - subgroup
-#' - color: line color
+#' - **fill**: use this to specify the category.
+#' - subgroup: see [@details ]
+#' - amount: see [@details ]
+#' - color: line color.
 #' - r1: the size of the pie chart.
 #' - linetype
 #' - alpha
 #'
-#' @section
+#' @details
 #' `subgroup`:
 #' The subgroup aesthetics refers to a set of observations that belong to the
-#' same pie. It is used to calculate the total count.
-#' If group is not explicitly specified, we will use the `x` and `y` aesthetics
-#' as group. We also assume that if two observation belongs to the same subgroup,
-#' they have the same x,y coordinates.
+#' same pie. It is used to calculate the total count. Most of the time you
+#' don't need to map this, and we will use the combination of x and y
+#' coordiantes to decide which observations belong to the same pie chart.
+#' **However**, if two subgroups have the same coordinates,
+#' such as when making two concentric pie charts,
+#' the default subgroups calculation is not accurate.
+#' You will need to supply the subgroup.
 #'
-#' **Note:**, if two groups have the same coordinates,
-#' such as making two concentric pie charts,
-#' the default group calculation is not accurate.
-#'
-#' On the other hand, fill is referring to the category within each group.
-#' In other word, it determines the angle of each slice of the pie.
-#' It does not make sense to have fill to be transparent.
+#' `amount`:
+#' Alternatively, you can calculate the per-subgroup total count yourself and
+#' map it to amount.
 #'
 #' @section
-#' [stat_point_pie]:
+#' Stat:
 #' By default, we assume the data is in a long format, where each row
-#' corresponds to one observation. In this case, [stat_point_pie] is called to
+#' corresponds to one observation. In this case, [stat_point_pie()] is called to
 #' help generated count for *each slice* of the pie.
 #'
 #' You can generate your own *per slice* count. In this case, map it to the
@@ -58,18 +57,17 @@
 #' @importFrom magrittr %>%
 #'
 #' @examples
+#' # Two pie charts:
 #' data = tibble::tibble(
 #'     x = c(1, 1, 1, 2, 2, 2, 2),
 #'     y = c(1, 1, 1, 2, 2, 2, 2),
-#'     grp = c(a, a, b, a, a, b, b)
+#'     grp = c("a", "a", "b", "a", "a", "b", "b")
 #' )
 #' ggplot2::ggplot(data, ggplot2::aes(x = x, y = y)) +
-#'   ggpointpie::geom_point_pie(ggplot2::aes(group = grp, fill = grp))
+#'   ggpointpie::geom_point_pie(ggplot2::aes(fill = grp))
 NULL
 
-#' @title
-#' A geom to plot pie chart with arbitary size and location.
-#'
+
 #' @rdname point_pie
 #' @export
 geom_point_pie <- function(
@@ -86,15 +84,14 @@ geom_point_pie <- function(
 
 
 #' @title
-#' PointPieGeom Proto
+#' PointPie ggproto classes
 #'
 #' @description
-#' ggproto class that descripe combination of pie chart and point.
+#' [ggproto()] class that describes combination of pie chart and point.
 #'
-#' ggplot always map size to 1-6. Use scale_size_continuous to deal with it.
-#' In the future, maybe get our own scale...
 #'
-#' @rdname point_pie
+#' @name ggproto-subclass
+#' @rdname ggproto-subclass
 #'
 #' @importFrom ggplot2 GeomPolygon .pt .stroke
 #' @importFrom scales alpha
@@ -102,13 +99,15 @@ geom_point_pie <- function(
 #' @importFrom rlang `%||%`
 #' @importFrom dplyr group_by mutate ungroup
 #'
-#' @param ... skip for now
+#' @param amount Useful when the user calculate the amount for each subgroup.
+#' @param subgroup Each complete pie chart
 #'
-#' todo: think about edge case where there is only 1 observation
-#' todo: deal with empty factor levels, what do we return?
+#' @details
+#' This is the subclass inherited from [ggproto()]. Use the main layer functions
+#' [geom_point_pie()] instead of this object.
+#'
 #'
 #' @export
-#'
 GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,
   required_aes = c("x", "y", "fill"),
