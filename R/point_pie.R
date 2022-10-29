@@ -2,7 +2,7 @@
 #' Draw pie chart at any x,y coordinates.
 #'
 #' @rdname point_pie
-#' @name geom_point_pie
+#' @name point_pie
 #'
 #' @description
 #' This geom is inherits from on [ggplot2::GeomPolygon]. W
@@ -14,22 +14,47 @@
 #'
 #' @section
 #' Aesthetics:
-#' geom_point_pie understand the following aesthetics (required aesthetics are in
+#' [geom_point_pie] understand the following aesthetics (required aesthetics are in
 #' bold):
 #'
 #' - **x**
 #' - **y**
-#' - **group**
+#' - **fill**
+#' - subgroup
 #' - color: line color
-#' - fill
 #' - r1: the size of the pie chart.
 #' - linetype
 #' - alpha
 #'
+#' @section
+#' `subgroup`:
+#' The subgroup aesthetics refers to a set of observations that belong to the
+#' same pie. It is used to calculate the total count.
+#' If group is not explicitly specified, we will use the `x` and `y` aesthetics
+#' as group. We also assume that if two observation belongs to the same subgroup,
+#' they have the same x,y coordinates.
+#'
+#' **Note:**, if two groups have the same coordinates,
+#' such as making two concentric pie charts,
+#' the default group calculation is not accurate.
+#'
+#' On the other hand, fill is referring to the category within each group.
+#' In other word, it determines the angle of each slice of the pie.
+#' It does not make sense to have fill to be transparent.
+#'
+#' @section
+#' [stat_point_pie]:
+#' By default, we assume the data is in a long format, where each row
+#' corresponds to one observation. In this case, [stat_point_pie] is called to
+#' help generated count for *each slice* of the pie.
+#'
+#' You can generate your own *per slice* count. In this case, map it to the
+#' aesthetics called `amount`.
+#'
 #' @inheritParams ggplot2::geom_polygon
 #' @param r0 The radius (0-1) of the inner circle, in case a donut plot is needed.
 #'
-#' @importFrom ggplot2 layer
+#' @importFrom ggplot2 layer ggproto aes
 #'
 #' @examples
 #' data = tibble::tibble(
@@ -37,19 +62,22 @@
 #'     y = c(1, 1, 1, 2, 2, 2, 2),
 #'     grp = c(a, a, b, a, a, b, b)
 #' )
-#' ggplot(data, aes(x = x, y = y)) +
-#'   geom_point_pie(aes(group = grp, fill = grp))
+#' ggplot2::ggplot(data, ggplot2::aes(x = x, y = y)) +
+#'   ggpointpie::geom_point_pie(ggplot2::aes(group = grp, fill = grp))
 NULL
 
+#' @title
+#' A geom to plot pie chart with arbitary size and location.
+#'
 #' @rdname point_pie
 #' @export
 geom_point_pie <- function(
-    mapping = NULL, data = NULL, stat = "identity",
+    mapping = NULL, data = NULL, stat = StatPointPie,
     position = "identity", r0 = 0L, na.rm = FALSE, show.legend = NA,
     inherit.aes = TRUE, ...
 ) {
   layer(
-    geom = GeomPointPie, mapping = mapping,  data = data, stat = stat,
+    geom = GeomPointPie, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, r0 = r0, ...)
   )
@@ -67,11 +95,11 @@ geom_point_pie <- function(
 #'
 #' @rdname point_pie
 #'
-#' @importFrom ggplot2 ggproto aes GeomPolygon .pt .stroke
+#' @importFrom ggplot2 GeomPolygon .pt .stroke
 #' @importFrom scales alpha
 #' @importFrom grid viewport pointsGrob
 #' @importFrom rlang `%||%`
-#' @import dplyr
+#' @importFrom dplyr group_by mutate ungroup
 #'
 #' @param ... skip for now
 #'
@@ -82,10 +110,10 @@ geom_point_pie <- function(
 #'
 GeomPointPie = ggproto(
   "GeomPointPie", GeomPolygon,
-  required_aes = c("x", "y", "group"),
+  required_aes = c("x", "y", "fill"),
   default_aes = aes(
     colour = "black", fill = NA, r0 = 0, r1 = 0.3,
-    alpha = 1, linetype = 1
+    alpha = 1, linetype = 1, amount = -1L, subgroup = NA
   ),
 
   draw_key = function(data, params, size) {
@@ -110,13 +138,9 @@ GeomPointPie = ggproto(
   draw_panel = function(data, panel_params, coord) {
     coords = coord$transform(data, panel_params)
     coords = coords %>%
-      group_by(across(everything())) %>%
-      summarize(
-        amount = n(),
-        .groups = "keep"
-      ) %>%
-      group_by(x, y) %>%
+      group_by(x, y, subgroup) %>%
       mutate(
+        amount = ifelse(amount == -1L, ct, amount), # Handle use of stat_identity
         theta1 = cumsum(amount),
         theta0 = theta1 - amount,
         theta1 = theta1 / sum(amount) * (2 * pi),
@@ -140,21 +164,22 @@ GeomPointPie = ggproto(
   }
 )
 
-#' @keywords internal
+
+#' @rdname point_pie
+#' @export
 stat_point_pie = function(
     mapping = NULL, data = NULL, geom = GeomPointPie,
     position = 'identity', na.rm = FALSE,
     show.legend = NA, inherit.aes = TRUE, ...
   ) {
   layer(
-    geom = StatPointPie, data = data, mapping = mapping, geom = geom,
+    data = data, mapping = mapping, geom = geom, stat = StatPointPie,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, ...)
   )
 }
 
-#' @importFrom ggplot2 StatIdentity
-#'
+
 #' @details
 #' Rethink about the design. Use this stat
 #' to transform the "long" format data (one observation per row)
@@ -163,16 +188,36 @@ stat_point_pie = function(
 #' This probably allow user to supply different data input, and they can
 #' just choose different stat when call geom...
 #'
-#' @keywords internal
+#'
+#' Use StatPointPie to turn long format to short format:
+#' group by `fill` + either `group` or `x,y`,
+#' count the number of observations.
+#'
+#'
+#' if `group` is supplied, Stat will recieve each group
+#'
+#' @importFrom ggplot2 Stat
+#'
+#' @rdname geom_point_pie
+#'
+#' @export
 StatPointPie = ggproto(
-  "StatPointPie", StatIdentity,
+  "StatPointPie",
+  Stat,
+  compute_group = function(self, data, scales) {
+    # Count each unique combination
+    # print(data)
+    # ct = nrow(data)
+    # data = head(data, n = 1L)
+    # data$ct = ct
+    # data
 
-  compute_layer = function(data, params, layout) {
-
+    data %>%
+      group_by(across(everything())) %>%
+      summarize(ct = n()) %>%
+      ungroup()
   },
-  compute_panel = function(data, scales, ...) {
-
-  }
+  required_aes = c("x", "y")
 )
 
 
