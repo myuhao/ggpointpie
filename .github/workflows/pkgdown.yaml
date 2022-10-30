@@ -29,9 +29,9 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-renv@v2
-        with:
-          extra-packages: any::pkgdown, local::.
-          needs: website
+
+      - name: Install package
+        run: Rscript -e 'renv::install("myuhao/ggpointpie")'
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
