@@ -1,6 +1,11 @@
 url: ~
 template:
   bootstrap: 5
+
+authors:
+  Yuhao Min:
+    href: https://myuhao.com
+
 reference:
 - title: Geoms
 - contents:
