@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>/404.html</loc>
+  </url>
+  <url>
+    <loc>/authors.html</loc>
+  </url>
+  <url>
+    <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-calc_arc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-calc_pie.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ggproto-subclass.html</loc>
+  </url>
+  <url>
+    <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pieGrob.html</loc>
+  </url>
+  <url>
+    <loc>/reference/point_pie.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_r1.html</loc>
+  </url>
+</urlset>
