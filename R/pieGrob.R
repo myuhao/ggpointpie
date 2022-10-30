@@ -33,7 +33,7 @@
 #' **position** (npc-based) and **size** (snpc-based) parameters.
 #' In the end, the grob will be located at the desired location
 #' with its radius proportional to the smaller of the width and height
-#' of the current viewport. Everything is normalized so [0-1] can be used.
+#' of the current viewport. Everything is normalized so (0-1) can be used.
 #'
 #' If the piece of pie is greater than 2*pi, it will draw a circle instrand.
 #'

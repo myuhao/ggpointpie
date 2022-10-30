@@ -8,6 +8,8 @@
 #' We currently do not support any discrete scale.
 #'
 #' @inheritParams ggplot2::continuous_scale
+#' @param range The upper and lower limit of the pie size.
+#' @param ... Not used.
 #'
 #' @seealso [ggplot2::scale_size_continuous()]
 #'

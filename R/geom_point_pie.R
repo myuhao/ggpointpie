@@ -19,8 +19,8 @@
 #' - **x**
 #' - **y**
 #' - **fill**: use this to specify the category.
-#' - subgroup: see [@details ]
-#' - amount: see [@details ]
+#' - subgroup: see @details
+#' - amount: see @details
 #' - color: line color.
 #' - r1: the size of the pie chart.
 #' - linetype
@@ -99,8 +99,8 @@ geom_point_pie <- function(
 #' @importFrom rlang `%||%`
 #' @importFrom dplyr group_by mutate ungroup
 #'
-#' @param amount Useful when the user calculate the amount for each subgroup.
-#' @param subgroup Each complete pie chart
+#' @note amount Useful when the user calculate the amount for each subgroup.
+#' @note subgroup Each complete pie chart
 #'
 #' @details
 #' This is the subclass inherited from [ggproto()]. Use the main layer functions

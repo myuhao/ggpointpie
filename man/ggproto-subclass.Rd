@@ -16,11 +16,6 @@ GeomPointPie
 
 StatPointPie
 }
-\arguments{
-\item{amount}{Useful when the user calculate the amount for each subgroup.}
-
-\item{subgroup}{Each complete pie chart}
-}
 \description{
 \code{\link[=ggproto]{ggproto()}} class that describes combination of pie chart and point.
 }
@@ -30,5 +25,10 @@ This is the subclass inherited from \code{\link[=ggproto]{ggproto()}}. Use the m
 
 The stat to calculate the count of each subgroup to handle the long data
 format
+}
+\note{
+amount Useful when the user calculate the amount for each subgroup.
+
+subgroup Each complete pie chart
 }
 \keyword{datasets}

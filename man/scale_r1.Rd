@@ -19,6 +19,8 @@ scale_r1_continuous(
 )
 }
 \arguments{
+\item{...}{Not used.}
+
 \item{name}{The name of the scale. Used as the axis or legend title. If
 \code{waiver()}, the default, the name of the scale is taken from the first
 mapping used for that aesthetic. If \code{NULL}, the legend title will be
@@ -58,6 +60,8 @@ Note that setting limits on positional scales will \strong{remove} data outside 
 If the purpose is to zoom, use the limit argument in the coordinate system
 (see \code{\link[ggplot2:coord_cartesian]{coord_cartesian()}}).
 }}
+
+\item{range}{The upper and lower limit of the pie size.}
 
 \item{trans}{For continuous scales, the name of a transformation object
 or the object itself. Built-in transformations include "asn", "atanh",

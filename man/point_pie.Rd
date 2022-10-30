@@ -76,6 +76,8 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters
 to the paired geom/stat.}
+
+\item{geom}{The geom to use.}
 }
 \description{
 This geom is used to draw any number of pie chart at any
@@ -107,8 +109,8 @@ map it to amount.
 \item \strong{x}
 \item \strong{y}
 \item \strong{fill}: use this to specify the category.
-\item subgroup: see \link{@details }
-\item amount: see \link{@details }
+\item subgroup: see @details
+\item amount: see @details
 \item color: line color.
 \item r1: the size of the pie chart.
 \item linetype

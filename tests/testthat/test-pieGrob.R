@@ -1,4 +1,3 @@
-library(tidyverse)
 library(grid)
 
 test_that("Test pieGrob with default", {

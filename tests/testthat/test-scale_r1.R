@@ -1,5 +1,3 @@
-library(tidyverse)
-library(grid)
 make_ggplot2_test_data = function(n_points = 5) {
   dat = tibble::tibble(
     x = rep(1, 5),

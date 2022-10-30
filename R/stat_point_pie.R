@@ -1,4 +1,5 @@
 #' @rdname point_pie
+#' @param geom The geom to use.
 #' @export
 stat_point_pie = function(
     mapping = NULL, data = NULL, geom = GeomPointPie,
