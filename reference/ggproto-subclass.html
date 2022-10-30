@@ -24,7 +24,13 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/myuhao/ggpointpie/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -32,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>PointPie ggproto classes</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/myuhao/ggpointpie/blob/HEAD/R/geom_point_pie.R" class="external-link"><code>R/geom_point_pie.R</code></a>, <a href="https://github.com/myuhao/ggpointpie/blob/HEAD/R/stat_point_pie.R" class="external-link"><code>R/stat_point_pie.R</code></a></small>
       <div class="d-none name"><code>ggproto-subclass.Rd</code></div>
     </div>
 
@@ -53,21 +59,16 @@
 <p>An object of class <code>StatPointPie</code> (inherits from <code>Stat</code>, <code>ggproto</code>, <code>gg</code>) of length 3.</p>
     </div>
     <div class="section level2">
-    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>amount</dt>
-<dd><p>Useful when the user calculate the amount for each subgroup.</p></dd>
-
-
-<dt>subgroup</dt>
-<dd><p>Each complete pie chart</p></dd>
-
-</dl></div>
-    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This is the subclass inherited from <code><a href="https://ggplot2.tidyverse.org/reference/ggproto.html" class="external-link">ggproto()</a></code>. Use the main layer functions
 <code><a href="point_pie.html">geom_point_pie()</a></code> instead of this object.</p>
 <p>The stat to calculate the count of each subgroup to handle the long data
 format</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>amount Useful when the user calculate the amount for each subgroup.</p>
+<p>subgroup Each complete pie chart</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
