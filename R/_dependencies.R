@@ -1,0 +1,2 @@
+library(rcmdcheck)
+library(ggpointpie)
